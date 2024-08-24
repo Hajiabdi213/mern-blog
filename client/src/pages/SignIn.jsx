@@ -1,13 +1,22 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  signInFailure,
+  signInSuccess,
+  signInStart,
+} from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const SignIn = () => {
+  const dispatch = useDispatch();
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
+
   const navigate = useNavigate();
   // loading state
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   // errorMessage state
-  const [errorMessage, setErrorMessage] = useState(null);
+  // const [errorMessage, setErrorMessage] = useState(null);
   // form data
   const [formData, setFormData] = useState({});
   const handleChange = (e) => {
@@ -19,12 +28,16 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.password || !formData.email) {
-      return setErrorMessage("Please fill out all the fields on the form");
+      // return setErrorMessage("Please fill out all the fields on the form");
+      return dispatch(
+        signInFailure("Please fill out all the fields on the form")
+      );
     }
     // call your backend API here to sign up user
     try {
-      setLoading(true);
-      setErrorMessage(null);
+      // setLoading(true);
+      // setErrorMessage(null);
+      dispatch(signInStart());
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -33,17 +46,17 @@ const SignIn = () => {
 
       const data = await res.json();
       if (data.success === false) {
-        setLoading(false);
-        return setErrorMessage(data.message);
+        // setLoading(false);
+        dispatch(signInFailure(data.message));
       }
-      setLoading(false);
+      // setLoading(false);
 
       if (res.ok) {
+        dispatch(signInSuccess(data));
         navigate("/");
       }
     } catch (error) {
-      setErrorMessage(error.message);
-      setLoading(false);
+      dispatch(signInFailure(error.message));
     }
   };
   return (
@@ -101,7 +114,6 @@ const SignIn = () => {
           <div className="flex gap-2 text-sm mt-5">
             <span>Don't have an account?</span>
             <Link to="/sign-up" className="text-blue-500">
-              {" "}
               Sign up
             </Link>
           </div>
