@@ -20,8 +20,10 @@ const Dashboard = () => {
       </div>
       {/* profile */}
 
-      <div className="w-full">{tab === "profile" && <DashProfile />}</div>
-      <div className="w-full">{tab === "posts" && <DashPosts />}</div>
+      <div className="w-full">
+        {tab === "profile" && <DashProfile />}
+        {tab === "posts" && <DashPosts />}
+      </div>
     </div>
   );
 };
