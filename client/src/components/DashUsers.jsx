@@ -10,6 +10,7 @@ const DashUsers = () => {
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState("");
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -46,6 +47,19 @@ const DashUsers = () => {
     }
   };
 
+  const handleUserDelete = async () => {
+    try {
+      const res = await fetch(`/api/user/delete/${userIdToDelete}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setUsers((prev) => prev.filter((user) => user._id !== userIdToDelete));
+        setShowModal(false);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div className="table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
       {currentUser.isAdmin && users.length > 0 ? (
@@ -123,7 +137,9 @@ const DashUsers = () => {
               Are you sure you want to delete this user?
             </h3>
             <div className="flex justify-center gap-4">
-              <Button color="failure">Yes, I'm Sure</Button>
+              <Button onClick={handleUserDelete} color="failure">
+                Yes, I'm Sure
+              </Button>
               <Button color="gray" onClick={() => setShowModal(false)}>
                 No, Cancel
               </Button>
