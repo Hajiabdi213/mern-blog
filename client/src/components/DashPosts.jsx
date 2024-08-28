@@ -1,4 +1,4 @@
-import { Button, Modal, Table, TableHead } from "flowbite-react";
+import { Button, Modal, Table } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { useSelector } from "react-redux";
@@ -62,7 +62,7 @@ const DashPosts = () => {
         console.log(data.message);
       } else {
         setUserPosts((prev) =>
-          prev.filter((post) => post._id !== postIdToDelete)
+          prev.filter((post) => post.id !== postIdToDelete)
         );
       }
     } catch (error) {
